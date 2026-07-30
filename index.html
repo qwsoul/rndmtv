@@ -125,9 +125,22 @@
 <div class="container">
 
     <!-- Главный экран трансляции -->
+      <!-- Главный экран трансляции с поддержкой мобильного фуллскрина -->
     <div class="video-wrapper">
-        <video id="rndm-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" data-setup='{}'>
-            <!-- В src ниже пока стоит стандартное видео океана для теста -->
+        <video 
+            id="rndm-player" 
+            class="video-js vjs-default-skin vjs-big-play-centered" 
+            controls 
+            preload="auto" 
+            playsinline 
+            webkit-playsinline
+            x5-playsinline
+            data-setup='{
+                "nativeControlsForTouch": false,
+                "userActions": {
+                    "doubleClick": true
+                }
+            }'>
             <source src="https://zencdn.net" type="video/mp4" />
             <p class="vjs-no-js">
                 Бро, обнови браузер, иначе RNDM TV не запустить!
