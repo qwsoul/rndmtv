@@ -144,12 +144,11 @@
 </div>
 
 <script>
-    function updateTV() {
+        function updateTV() {
         // ==========================================
         // 🎛️ ТЕСТОВЫЙ ПУЛЬТ УПРАВЛЕНИЯ ВИДЕО:
-        // Пиши "мультики" — включится Мультик про Зайца.
-        // Пиши "фильмы"  — включится Смешной Котик.
-        // Пиши "show"    — включится красивое видео Природы.
+        // Пиши "мультики" — включится видео-тест.
+        // Пиши "фильмы"  — включится резервный тест.
         // ==========================================
         const CURRENT_MODE = "мультики"; 
 
@@ -162,26 +161,24 @@
         let showTitle = "";
 
         if (CURRENT_MODE === "мультики") {
-            showTitle = "«Мульт-тайм» (Тест: Мультик про Зайца) ⚡";
-            videoUrl = "https://googleapis.com";
+            showTitle = "«Мульт-тайм» (Железный тест №1) ⚡";
+            // Вставляем ссылку на видео с официального и разрешенного сервера
+            videoUrl = "https://html5demos.com";
+            
             scheduleTitle.innerHTML = "Тестовый режим: Мультики 🧸";
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет тестовый мультфильм</span></div>`;
-        } else if (CURRENT_MODE === "фильмы") {
-            showTitle = "Большой Киномарафон (Тест: Мемный Кот) 🎬🔥";
-            videoUrl = "https://googleapis.com";
+        } else {
+            showTitle = "Большой Киномарафон (Железный тест №2) 🎬🔥";
+            videoUrl = "https://w3schools.com";
+            
             scheduleTitle.innerHTML = "Тестовый режим: Фильмы 🍿";
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет тестовое кино</span></div>`;
-        } else {
-            showTitle = "🔥 СПЕЦ-ЭФИР: Наша передача (Тест: Природа) 🔥";
-            videoUrl = "https://googleapis.com";
-            scheduleTitle.innerHTML = "Тестовый режим: Спец-Шоу 🚀";
-            scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет наше шоу</span></div>`;
         }
 
         // Обновляем текст статуса
         statusBar.innerHTML = showTitle;
 
-        // Чистое нативное переключение потока для Safari
+        // Чистое нативное переключение потока
         if (videoElement.src !== videoUrl) {
             videoElement.src = videoUrl;
             videoElement.load();
@@ -190,6 +187,7 @@
 
     // Запускаем систему
     updateTV();
+
 </script>
 
 </body>
