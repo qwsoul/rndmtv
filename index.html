@@ -131,6 +131,7 @@
                     "doubleClick": true
                 }
             }'>
+            <source src="https://googleapis.com" type="video/mp4" />
             <p class="vjs-no-js">
                 Бро, обнови браузер, иначе RNDM TV не запустить!
             </p>
@@ -158,9 +159,9 @@
 <script>
     function updateTV() {
         // ==========================================
-        // 🎛️ ТЕСТОВЫЙ ПУЛЬТ УПРАВЛЕНИЯ ВИДЕО (Строчка 135):
-        // Пиши "мультики" — включится Мультик про Зайца (Big Buck Bunny).
-        // Пиши "фильмы"  — включится Смешной Котик в коробке.
+        // 🎛️ ТЕСТОВЫЙ ПУЛЬТ УПРАВЛЕНИЯ ВИДЕО (Строчка 137):
+        // Пиши "мультики" — включится Мультик про Зайца.
+        // Пиши "фильмы"  — включится Смешной Котик.
         // Пиши "show"    — включится красивое видео Природы.
         // ==========================================
         const CURRENT_MODE = "мультики"; 
@@ -169,46 +170,53 @@
         const scheduleList = document.getElementById('schedule-list');
         const statusBar = document.getElementById('current-show');
         
-        // Правильно инициализируем плеер через Video.js для iOS
-        const player = videojs('rndm-player');
+        // Ссылка на плеер
+        const videoElement = document.getElementById('rndm-player');
 
         let videoUrl = "";
         let showTitle = "";
 
-        // Проверяем режим:
+        // Сначала железно строим текст и расписание, чтобы ничего не пропадало
         if (CURRENT_MODE === "мультики") {
             showTitle = "«Мульт-тайм» (Тест: Мультик про Зайца) ⚡";
             videoUrl = "https://googleapis.com";
-            
             scheduleTitle.innerHTML = "Тестовый режим: Мультики 🧸";
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет тестовый мультфильм</span></div>`;
-            
         } else if (CURRENT_MODE === "фильмы") {
             showTitle = "Большой Киномарафон (Тест: Мемный Кот) 🎬🔥";
             videoUrl = "https://googleapis.com";
-            
             scheduleTitle.innerHTML = "Тестовый режим: Фильмы 🍿";
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет тестовое кино</span></div>`;
-            
         } else {
             showTitle = "🔥 СПЕЦ-ЭФИР: Наша передача (Тест: Природа) 🔥";
             videoUrl = "https://googleapis.com";
-            
             scheduleTitle.innerHTML = "Тестовый режим: Спец-Шоу 🚀";
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет наше шоу</span></div>`;
         }
 
-        // Переключение видеопотока, адаптированное под iPhone
-        if (statusBar.innerHTML !== showTitle) {
-            statusBar.innerHTML = showTitle;
-            
-            // Смена источника через официальный метод Video.js
-            player.src({ type: 'video/mp4', src: videoUrl });
-            player.load();
+        // Обновляем текст статуса
+        statusBar.innerHTML = showTitle;
+
+        // Только потом настраиваем плеер Video.js (Чит-код для iOS)
+        try {
+            const player = videojs('rndm-player');
+            if (player.src() !== videoUrl) {
+                player.src({ type: 'video/mp4', src: videoUrl });
+                player.load();
+            }
+        } catch(e) {
+            // Если Video.js еще не проснулся, подставляем ссылку напрямую в тег
+            if (videoElement.src !== videoUrl) {
+                videoElement.src = videoUrl;
+                videoElement.load();
+            }
         }
     }
 
-    // Запускаем плеер, когда iOS полностью подготовит страницу
+    // Запускаем обновление текста сразу, не дожидаясь плеера
+    updateTV();
+
+    // А когда плеер на Айфоне будет готов — связываем систему
     videojs('rndm-player').ready(function() {
         updateTV();
     });
