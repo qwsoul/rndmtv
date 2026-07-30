@@ -115,7 +115,7 @@
 
 <div class="container">
 
-    <!-- Главный экран трансляции с поддержкой мобильного фуллскрина -->
+    <!-- Главный экран трансляции (Исправлен под Айфоны) -->
     <div class="video-wrapper">
         <video 
             id="rndm-player" 
@@ -124,15 +124,13 @@
             preload="auto" 
             playsinline 
             webkit-playsinline
-            x5-playsinline
+            crossorigin="anonymous"
             data-setup='{
                 "nativeControlsForTouch": false,
                 "userActions": {
                     "doubleClick": true
                 }
             }'>
-            <!-- Изначально пустой источник, его заполнит скрипт ниже -->
-            <source src="" type="video/mp4" />
             <p class="vjs-no-js">
                 Бро, обнови браузер, иначе RNDM TV не запустить!
             </p>
@@ -171,8 +169,8 @@
         const scheduleList = document.getElementById('schedule-list');
         const statusBar = document.getElementById('current-show');
         
-        // Находим сам плеер на странице
-        const videoElement = document.getElementById('rndm-player');
+        // Правильно инициализируем плеер через Video.js для iOS
+        const player = videojs('rndm-player');
 
         let videoUrl = "";
         let showTitle = "";
@@ -200,18 +198,20 @@
             scheduleList.innerHTML = `<div class="schedule-item"><span class="time">В ЭФИРЕ</span><span class="title">Сейчас идет наше шоу</span></div>`;
         }
 
-        // Переключение видеопотока без перезагрузки всей страницы
+        // Переключение видеопотока, адаптированное под iPhone
         if (statusBar.innerHTML !== showTitle) {
             statusBar.innerHTML = showTitle;
             
-            // Заменяем ссылку в самом плеере и обновляем его
-            videoElement.src = videoUrl;
-            videoElement.load();
+            // Смена источника через официальный метод Video.js
+            player.src({ type: 'video/mp4', src: videoUrl });
+            player.load();
         }
     }
 
-    // Запускаем плеер и систему
-    updateTV();
+    // Запускаем плеер, когда iOS полностью подготовит страницу
+    videojs('rndm-player').ready(function() {
+        updateTV();
+    });
 </script>
 
 </body>
