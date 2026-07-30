@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RNDM TV — Главный плеер</title>
     
-    <!-- Подключаем стильный плеер Video.js -->
-    <link href="https://zencdn.net" rel="stylesheet" />
-    
     <style>
         /* Общие стили для вайба RNDM TV */
         body {
@@ -28,10 +25,10 @@
             margin-top: 20px;
         }
 
-        /* Стиль плеера */
+        /* Нативный адаптивный плеер, который ОДОБРЕН Apple */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* Идеальные пропорции экрана 16:9 */
+            padding-bottom: 56.25%; /* Экран 16:9 */
             height: 0;
             border-radius: 12px;
             overflow: hidden;
@@ -46,6 +43,8 @@
             left: 0;
             width: 100%;
             height: 100%;
+            border-radius: 12px;
+            background: #000;
         }
 
         /* Информационная плашка "Сейчас в эфире" */
@@ -115,26 +114,17 @@
 
 <div class="container">
 
-    <!-- Главный экран трансляции (Исправлен под Айфоны) -->
+    <!-- Чистый стандартный тег video, который iOS не сможет заблокировать -->
     <div class="video-wrapper">
         <video 
             id="rndm-player" 
-            class="video-js vjs-default-skin vjs-big-play-centered" 
             controls 
-            preload="auto" 
+            preload="metadata" 
             playsinline 
             webkit-playsinline
-            crossorigin="anonymous"
-            data-setup='{
-                "nativeControlsForTouch": false,
-                "userActions": {
-                    "doubleClick": true
-                }
-            }'>
+            controlslist="nodownload">
             <source src="https://googleapis.com" type="video/mp4" />
-            <p class="vjs-no-js">
-                Бро, обнови браузер, иначе RNDM TV не запустить!
-            </p>
+            Бро, обнови браузер!
         </video>
     </div>
 
@@ -153,13 +143,10 @@
 
 </div>
 
-<!-- Скрипты для работы плеера на мобилках -->
-<script src="https://zencdn.net"></script>
-
 <script>
     function updateTV() {
         // ==========================================
-        // 🎛️ ТЕСТОВЫЙ ПУЛЬТ УПРАВЛЕНИЯ ВИДЕО (Строчка 137):
+        // 🎛️ ТЕСТОВЫЙ ПУЛЬТ УПРАВЛЕНИЯ ВИДЕО:
         // Пиши "мультики" — включится Мультик про Зайца.
         // Пиши "фильмы"  — включится Смешной Котик.
         // Пиши "show"    — включится красивое видео Природы.
@@ -169,14 +156,11 @@
         const scheduleTitle = document.getElementById('schedule-title');
         const scheduleList = document.getElementById('schedule-list');
         const statusBar = document.getElementById('current-show');
-        
-        // Ссылка на плеер
         const videoElement = document.getElementById('rndm-player');
 
         let videoUrl = "";
         let showTitle = "";
 
-        // Сначала железно строим текст и расписание, чтобы ничего не пропадало
         if (CURRENT_MODE === "мультики") {
             showTitle = "«Мульт-тайм» (Тест: Мультик про Зайца) ⚡";
             videoUrl = "https://googleapis.com";
@@ -197,29 +181,15 @@
         // Обновляем текст статуса
         statusBar.innerHTML = showTitle;
 
-        // Только потом настраиваем плеер Video.js (Чит-код для iOS)
-        try {
-            const player = videojs('rndm-player');
-            if (player.src() !== videoUrl) {
-                player.src({ type: 'video/mp4', src: videoUrl });
-                player.load();
-            }
-        } catch(e) {
-            // Если Video.js еще не проснулся, подставляем ссылку напрямую в тег
-            if (videoElement.src !== videoUrl) {
-                videoElement.src = videoUrl;
-                videoElement.load();
-            }
+        // Чистое нативное переключение потока для Safari
+        if (videoElement.src !== videoUrl) {
+            videoElement.src = videoUrl;
+            videoElement.load();
         }
     }
 
-    // Запускаем обновление текста сразу, не дожидаясь плеера
+    // Запускаем систему
     updateTV();
-
-    // А когда плеер на Айфоне будет готов — связываем систему
-    videojs('rndm-player').ready(function() {
-        updateTV();
-    });
 </script>
 
 </body>
