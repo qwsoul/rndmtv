@@ -25,10 +25,10 @@
             margin-top: 20px;
         }
 
-        /* Профессиональный адаптивный плеер: сам растягивается под любые мобилки */
+        /* Профессиональный адаптивный плеер */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* Идеальные пропорции экрана 16:9 */
+            padding-bottom: 56.25%; /* Пропорции экрана 16:9 */
             height: 0;
             border-radius: 12px;
             overflow: hidden;
@@ -114,11 +114,11 @@
 
 <div class="container">
 
-    <!-- Живой экран трансляции из вашей OBS Studio через стабильный источник ВК -->
+    <!-- Чистый и разрешенный код плеера через проверенный домен vk.com -->
     <div class="video-wrapper">
         <iframe 
-            src="https://vkvideo.ru" 
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
+            src="https://vk.com" 
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture;" 
             allowfullscreen="true" 
             scrolling="no">
         </iframe>
@@ -133,7 +133,7 @@
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
-            <!-- Сюда JavaScript сам вставит нужные строки в зависимости от режима -->
+            <!-- Сюда JavaScript сам вставит нужные строки -->
         </div>
     </div>
 
@@ -141,15 +141,8 @@
 
 <script>
     function updateTV() {
-        // ==========================================
-        // 🎛️ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ:
-        // Пиши "мультики" для обычного дня.
-        // Пиши "фильмы" для Дня Фильмов.
-        // Пиши "шоу" для спец-выпусков ваших передач.
-        // ==========================================
         const CURRENT_MODE = "мультики"; 
 
-        // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
         const adminTime = new Date(utc + (3600000 * 3)); 
