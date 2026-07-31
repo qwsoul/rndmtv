@@ -25,10 +25,10 @@
             margin-top: 20px;
         }
 
-        /* Стиль плеера */
+        /* Профессиональный адаптивный плеер: сам растягивается под любые мобилки */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* Пропорции экрана 16:9 */
+            padding-bottom: 56.25%; /* Идеальные пропорции экрана 16:9 */
             height: 0;
             border-radius: 12px;
             overflow: hidden;
@@ -114,17 +114,17 @@
 
 <div class="container">
 
-    <!-- Живой экран трансляции с хакерским обходом блокировок ВК -->
+    <!-- Живой экран трансляции из вашей OBS Studio через стабильный источник ВК -->
     <div class="video-wrapper">
         <iframe 
             src="https://vkvideo.ru" 
-            allow="autoplay; encrypted-media; fullscreen"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
             allowfullscreen="true" 
             scrolling="no">
         </iframe>
     </div>
 
-    <!-- Инфо-бар (Обновляется автоматически) -->
+    <!-- Инфо-бар (Обновляется автоматически кодом по МСК) -->
     <div class="status-bar">
         <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
@@ -133,7 +133,7 @@
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
-            <!-- Сюда JavaScript сам вставит нужные строки -->
+            <!-- Сюда JavaScript сам вставит нужные строки в зависимости от режима -->
         </div>
     </div>
 
@@ -209,7 +209,7 @@
             if (timeInMinutes >= 540 && timeInMinutes < 630) {
                 statusBar.innerHTML = "«Просыпайся-ка» ☀️";
             } else if (timeInMinutes >= 630 && timeInMinutes < 1080) {
-                statusBar.innerHTML = "«Мульт-тайm» (Марафон мультсериалов) 🧸";
+                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультсериалов) 🧸";
             } else if (timeInMinutes >= 1080 && timeInMinutes < 1200) {
                 statusBar.innerHTML = "«Музыкальная вечеринка» 🎵🕺";
             } else {
