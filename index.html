@@ -25,7 +25,7 @@
             margin-top: 20px;
         }
 
-        /* Стиль плеера */
+        /* Стиль плеера под размеры iframe */
         .video-wrapper {
             position: relative;
             padding-bottom: 56.25%; /* Пропорции экрана 16:9 */
@@ -37,13 +37,14 @@
             background-color: #000000;
         }
 
-        .video-wrapper video {
+        .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
+            border: none;
+            border-radius: 12px;
         }
 
         /* Информационная плашка "Сейчас в эфире" */
@@ -113,21 +114,16 @@
 
 <div class="container">
 
-    <!-- Будущий экран трансляции из OBS -->
+    <!-- Живой экран трансляции из вашей OBS Studio через VK Live -->
     <div class="video-wrapper">
-        <video 
-            id="rndm-player" 
-            controls 
-            preload="metadata" 
-            playsinline 
-            webkit-playsinline>
-            <!-- Сюда потом встанет .m3u8 ссылка от твоего OBS сервера -->
-            <source src="" type="application/x-mpegURL" />
-            Бро, обнови браузер, иначе RNDM TV не запустить!
-        </video>
+        <iframe 
+            src="https://live.vkvideo.ru/app/embed/r6ndomguy" 
+            allowfullscreen="true" 
+            scrolling="no">
+        </iframe>
     </div>
 
-    <!-- Инфо-бар -->
+    <!-- Инфо-бар (Обновляется автоматически) -->
     <div class="status-bar">
         <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
