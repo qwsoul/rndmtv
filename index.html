@@ -8,7 +8,7 @@
     <style>
         /* Общие стили для вайба RNDM TV */
         body {
-            background-color: #0b0b0b !important; /* Глубокий черный цвет */
+            background-color: #0b0b0b !important;
             color: #ffffff;
             font-family: 'Futura', 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
@@ -25,10 +25,10 @@
             margin-top: 20px;
         }
 
-        /* Профессиональный адаптивный плеер */
+        /* Нативный адаптивный плеер, одобренный Apple и Android */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* Пропорции экрана 16:9 */
+            padding-bottom: 56.25%; /* Экран 16:9 */
             height: 0;
             border-radius: 12px;
             overflow: hidden;
@@ -37,20 +37,20 @@
             background-color: #000000;
         }
 
-        .video-wrapper iframe {
+        .video-wrapper video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
             border-radius: 12px;
+            background: #000;
         }
 
         /* Информационная плашка "Сейчас в эфире" */
         .status-bar {
             background-color: #141414;
-            border: 2px solid #ff6600; /* Твой сочный оранжевый цвет */
+            border: 2px solid #ff6600; /* Наш сочный оранжевый цвет */
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 30px;
@@ -114,33 +114,60 @@
 
 <div class="container">
 
-    <!-- Твой вечный защищенный плеер из закрытой группы ВК -->
+    <!-- Чистый стандартный плеер без блокировок -->
     <div class="video-wrapper">
-        <iframe 
-            src="https://vkvideo.ru/video_ext.php?oid=-228287672&id=456239018&hash=c3fb7fb170af3108&hd=3" 
-            allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
-            allowfullscreen="true" 
-            scrolling="no">
-        </iframe>
+        <video 
+            id="rndm-player" 
+            controls 
+            preload="auto" 
+            playsinline 
+            webkit-playsinline>
+            <source src="" type="video/mp4" />
+            Бро, обнови браузер!
+        </video>
     </div>
 
-    <!-- Инфо-бар (Обновляется автоматически кодом по МСК) -->
+    <!-- Инфо-бар -->
     <div class="status-bar">
         <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
 
-    <!-- Твое правильное расписание -->
+    <!-- Твое расписание -->
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
-            <!-- Сюда JavaScript сам вставит нужные строки в зависимости от режима -->
+            <!-- Сюда всё вставится автоматически кодом -->
         </div>
     </div>
 
 </div>
 
 <script>
+    // =================================================================
+    // 🎛️ ЕДИНЫЙ ПЛЕЙЛИСТ КАНАЛА (ТВОЯ ОБЩАЯ БАЗА СКЛЕЕК)
+    // Закидывай сюда куски из CapCut друг за другом через запятую!
+    // url: Прямая ссылка .mp4 с Гугл Диска
+    // len: Длина куска СТРОГО В СЕКУНДАХ
+    // =================================================================
+    const PLAYLIST = [
+        {
+            url: "https://googleapis.com",
+            len: 596, // Твой Блок №1 (сейчас тут тестовый заяц на 9 минут 56 сек)
+            name: "«Мульт-Микс» (Лунтик + Барбоскины + Эксклюзивное Шоу) 🧸🔥"
+        },
+        {
+            url: "https://googleapis.com",
+            len: 653, // Твой Блок №2 (тестовый мульт на 10 минут 53 сек)
+            name: "«Поп-Блок» (Смешарики + Музыкальный Чилл + Реклама) 🎵🕺"
+        }
+    ];
+
     function updateTV() {
+        // =================================================================
+        // 🎛️ ПУЛЬТ УПРАВЛЕНИЯ РАСПИСАНИЕМ (Строчка 147):
+        // Пиши "мультики" — включится обычный день (наше фирменное расписание по часам).
+        // Пиши "фильмы"   — включится оформление под Праздничный Киномарафон!
+        // =================================================================
         const CURRENT_MODE = "мультики"; 
 
         // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
@@ -150,47 +177,49 @@
         
         const hours = adminTime.getHours();
         const minutes = adminTime.getMinutes();
-        const timeInMinutes = hours * 60 + minutes;
+        const seconds = adminTime.getSeconds();
+        
+        const totalSecondsToday = (hours * 3600) + (minutes * 60) + seconds;
 
         const scheduleTitle = document.getElementById('schedule-title');
         const scheduleList = document.getElementById('schedule-list');
         const statusBar = document.getElementById('current-show');
+        const videoElement = document.getElementById('rndm-player');
 
+        let videoUrl = "";
+        let startFromSecond = 0;
+        let showTitle = "";
+
+        // 🧮 УМНЫЙ МАТЕМАТИЧЕСКИЙ СИНХРОН ВСЕХ КУСКОВ ИЗ ЕДИНОГО ПЛЕЙЛИСТА
+        let totalPlaylistSeconds = 0;
+        for (let i = 0; i < PLAYLIST.length; i++) {
+            totalPlaylistSeconds += PLAYLIST[i].len;
+        }
+
+        let currentCycleSecond = totalSecondsToday % totalPlaylistSeconds;
+        let accumulatedSeconds = 0;
+        let currentMedia = PLAYLIST;
+
+        for (let i = 0; i < PLAYLIST.length; i++) {
+            accumulatedSeconds += PLAYLIST[i].len;
+            if (currentCycleSecond < accumulatedSeconds) {
+                currentMedia = PLAYLIST[i];
+                startFromSecond = currentCycleSecond - (accumulatedSeconds - PLAYLIST[i].len);
+                break;
+            }
+        }
+
+        videoUrl = currentMedia.url;
+        showTitle = currentMedia.name;
+
+        // 🎨 ПУЛЬТ УПРАВЛЕНИЯ ПЛАШКАМИ РАСПИСАНИЯ
         if (CURRENT_MODE === "фильмы") {
             scheduleTitle.innerHTML = "Расписание RNDM TV (День Фильмов) 🍿";
             scheduleList.innerHTML = `
-                <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
-                <div class="schedule-item"><span class="time">10:30 - 12:30</span><span class="title">«Мульт-тайм» (Топовые мультики)</span></div>
-                <div class="schedule-item"><span class="time">12:30 - 00:00</span><span class="title">Большой Киномарафон (Фильмы и Сериалы нон-стоп)</span></div>
+                <div class="schedule-item"><span class="time">КРУГЛОСУТОЧНО</span><span class="title">🔥 ПРАЗДНИЧНЫЙ КИНОМАРАФОН: Лучшие фильмы и сериалы нон-стоп!</span></div>
+                <div class="schedule-item"><span class="time">ИНФО</span><span class="title">Эфир полностью синхронизирован секунда в секунду для всей планеты!</span></div>
             `;
-
-            if (timeInMinutes >= 540 && timeInMinutes < 630) {
-                statusBar.innerHTML = "«Просыпайся-ка» ☀️";
-            } else if (timeInMinutes >= 630 && timeInMinutes < 750) {
-                statusBar.innerHTML = "«Мульт-тайм» ⚡";
-            } else {
-                statusBar.innerHTML = "Большой Киномарафон (Фильмы и Сериалы) 🎬🔥";
-            }
-
-        } else if (CURRENT_MODE === "шоу") {
-            scheduleTitle.innerHTML = "Расписание RNDM TV (СПЕЦ-ВЫПУСК) 🚀";
-            scheduleList.innerHTML = `
-                <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
-                <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
-                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕДАЧИ (Эксклюзивные шоу от админов!)</span></div>
-                <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
-            `;
-
-            if (timeInMinutes >= 540 && timeInMinutes < 630) {
-                statusBar.innerHTML = "«Просыпайся-ка» ☀️";
-            } else if (timeInMinutes >= 720 && timeInMinutes < 900) {
-                statusBar.innerHTML = "«Мульт-тайм» 🧸";
-            } else if (timeInMinutes >= 1020 && timeInMinutes < 1200) {
-                statusBar.innerHTML = "🔥 ЭФИР АДМИНОВ: Наши Спец-Передачи! 🔥";
-            } else {
-                statusBar.innerHTML = "Вечерний чилл 🌙";
-            }
-
+            statusBar.innerHTML = "Большой Киномарафон на RNDM TV! 🎬🍿";
         } else {
             scheduleTitle.innerHTML = "Расписание RNDM TV (Обычный день) 📺";
             scheduleList.innerHTML = `
@@ -199,21 +228,28 @@
                 <div class="schedule-item"><span class="time">18:00 - 20:00</span><span class="title">«Музыкальная вечеринка» (Анимации и треки)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 09:00</span><span class="title">Ночной эфир (Уютные мультики перед сном)</span></div>
             `;
+            statusBar.innerHTML = showTitle; // Берем красивое имя текущей склейки
+        }
 
-            if (timeInMinutes >= 540 && timeInMinutes < 630) {
-                statusBar.innerHTML = "«Просыпайся-ка» ☀️";
-            } else if (timeInMinutes >= 630 && timeInMinutes < 1080) {
-                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультсериалов) 🧸";
-            } else if (timeInMinutes >= 1080 && timeInMinutes < 1200) {
-                statusBar.innerHTML = "«Музыкальная вечеринка» 🎵🕺";
-            } else {
-                statusBar.innerHTML = "Ночной эфир (Уютные мультики) 🌙💤";
-            }
+        // Если кусок по времени суток сменился — переключаем видеопоток
+        if (videoElement.src !== videoUrl) {
+            videoElement.src = videoUrl;
+            videoElement.load();
+            
+            // Прыгаем на нужную секунду внутри куска для живого синхрона
+            videoElement.onloadedmetadata = function() {
+                if (startFromSecond < videoElement.duration) {
+                    videoElement.currentTime = startFromSecond;
+                } else {
+                    videoElement.currentTime = 0;
+                }
+            };
         }
     }
 
     updateTV();
-    setInterval(updateTV, 60000);
+    // Проверяем смену блоков каждые 5 секунд для максимальной точности
+    setInterval(updateTV, 5000);
 </script>
 
 </body>
