@@ -114,7 +114,7 @@
 
 <div class="container">
 
-    <!-- Та самая чистая ссылка, которая дарила нам радость 20 минут назад -->
+    <!-- Твоя идеальная рабочая ссылка на живой стрим из ВК -->
     <div class="video-wrapper">
         <iframe 
             src="https://vkvideo.ru" 
@@ -141,6 +141,12 @@
 
 <script>
     function updateTV() {
+        // =================================================================
+        // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ:
+        // Пиши "мультики" для обычного дня (работает по часам).
+        // Пиши "фильмы" для Дня Фильмов.
+        // Пиши "шоу" для спец-выпусков ваших передач.
+        // =================================================================
         const CURRENT_MODE = "мультики"; 
 
         // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
@@ -177,7 +183,7 @@
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
                 <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
-                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕДАЧИ (Эксклюзивные шоу от админов!)</span></div>
+                <div class="schedule-item"><span class="time">🔥 НАШИ ПЕРЕРАЧИ (Эксклюзивные шоу от админов!)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
             `;
 
@@ -212,25 +218,8 @@
         }
     }
 
-    // 🕵️‍♂️ УМНАЯ ХАКЕРСКАЯ АВТО-СИНХРОНИЗАЦИЯ ПОЛЬЗОВАТЕЛЕЙ
-    function checkAdminMode() {
-        fetch(window.location.href, { cache: "no-store" })
-        .then(response => response.text())
-        .then(htmlText => {
-            let match = htmlText.match(/const\s+CURRENT_MODE\s*=\s*["']([^"']+)["']/);
-            if (match && match[1]) {
-                let liveModeOnGithub = match[1];
-                if (liveModeOnGithub !== CURRENT_MODE) {
-                    window.location.reload();
-                }
-            }
-        })
-        .catch(err => console.log("Ошибка чека синхрона:", err));
-    }
-
     updateTV();
-    setInterval(updateTV, 60000); // Обновляем плашки по часам каждую минуту
-    setInterval(checkAdminMode, 30000); // Чекаем пульт на Гитхабе каждые 30 секунд под капотом!
+    setInterval(updateTV, 60000); // Только часы, никакого авто-ребута!
 </script>
 
 </body>
