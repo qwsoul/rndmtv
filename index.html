@@ -47,16 +47,16 @@
             border-radius: 12px;
         }
 
-        /* 🛡️ ХАКЕРСКИЙ НЕВИДИМЫЙ ЩИТ ОТ КЛИКОВ ПО ЛОГОТИПУ ВК */
+        /* 🛡️ КОРРЕКТНЫЙ НЕВИДИМЫЙ ЩИТ строго на логотип ВК */
         .vk-shield {
             position: absolute;
             right: 0;
             bottom: 0;
-            width: 160px; /* Закрывает правый нижний угол, где кнопка ВК */
-            height: 50px;  /* Высота нижней панели управления */
-            background: rgba(0, 0, 0, 0); /* Абсолютно прозрачный */
-            z-index: 10; /* Ловит клики на себя, не пуская их в iframe */
-            cursor: default;
+            width: 140px; /* Закрывает только сам значок ВК в углу */
+            height: 45px;  /* Высота плашки кнопок */
+            background: rgba(0, 0, 0, 0); 
+            z-index: 999; /* Поверх фрейма */
+            pointer-events: auto; /* Позволяет ловить клики */
         }
 
         /* Информационная плашка "Сейчас в эфире" */
@@ -126,7 +126,7 @@
 
 <div class="container">
 
-    <!-- Твой живой эфир из ВК, защищенный от кликов по логотипу -->
+    <!-- Твой живой эфир из ВК, защищенный от кликов -->
     <div class="video-wrapper">
         <iframe 
             src="https://vkvideo.ru" 
@@ -134,7 +134,7 @@
             allowfullscreen="true" 
             scrolling="no">
         </iframe>
-        <div class="vk-shield"></div> <!-- Наш защитный щит -->
+        <div class="vk-shield"></div> 
     </div>
 
     <!-- Инфо-бар -->
@@ -142,7 +142,7 @@
         <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
 
-    <!-- Полная сочная панель расписания -->
+    <!-- Твое расписание -->
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
@@ -153,9 +153,15 @@
 </div>
 
 <script>
-    function updateTV() {
-        const CURRENT_MODE = "мультики"; 
+    // =================================================================
+    // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ (Строчка 153):
+    // Пиши "мультики" для обычного дня (работает по часам).
+    // Пиши "фильмы" для Дня Фильмов.
+    // Пиши "шоу" для спец-выпусков ваших передач.
+    // =================================================================
+    const CURRENT_MODE = "мультики"; 
 
+    function updateTV() {
         // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -189,8 +195,8 @@
             scheduleTitle.innerHTML = "Расписание RNDM TV (СПЕЦ-ВЫПУСК) 🚀";
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
-                <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
-                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕРАЧИ (Эксклюзивные шоу от админов!)</span></div>
+                <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной block)</span></div>
+                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕДАЧИ (Эксклюзивные шоу от админов!)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
             `;
 
@@ -225,9 +231,25 @@
         }
     }
 
-    updateTV();
-    setInterval(updateTV, 60000);
-</script>
+    // 🕵️‍♂️ УМНАЯ ХАКЕРСКАЯ АВТО-СИНХРОНИЗАЦИЯ ПОЛЬЗОВАТЕЛЕЙ
+    function checkAdminMode() {
+        // Загружаем чистый код текущей страницы с Гитхаба в фоновом режиме
+        fetch(window.location.href, { cache: "no-store" })
+        .then(response => response.text())
+        .then(htmlText => {
+            // Ищем, какой режим сейчас прописан на Гитхабе в строчке CURRENT_MODE
+            let match = htmlText.match(/const\s+CURRENT_MODE\s*=\s*["']([^"']+)["']/);
+            if (match && match[1]) {
+                let liveModeOnGithub = match[1];
+                // Если режим на Гитхабе сменился, а у пользователя открыт старый — мягко перезапускаем страницу
+                if (liveModeOnGithub !== CURRENT_MODE) {
+                    window.location.reload();
+                }
+            }
+        })
+        .catch(err => console.log("Ошибка чека синхрона:", err));
+    }
 
-</body>
-</html>
+    updateTV();
+    setInterval(updateTV, 60000); // Обновляем плашки по часам каждую минуту
+    setInterval(checkAdminMode, 30000); // Чекаем пульт на Гитхабе каждые 30 секунд под капотом
