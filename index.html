@@ -25,10 +25,10 @@
             margin-top: 20px;
         }
 
-        /* Профессиональный адаптивный плеер, сам растягивается под экраны мобилок */
+        /* Профессиональный адаптивный плеер */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* Идеальные пропорции экрана 16:9 */
+            padding-bottom: 56.25%; /* Пропорции экрана 16:9 */
             height: 0;
             border-radius: 12px;
             overflow: hidden;
@@ -45,6 +45,18 @@
             height: 100%;
             border: none;
             border-radius: 12px;
+        }
+
+        /* 🛡️ ХАКЕРСКИЙ НЕВИДИМЫЙ ЩИТ ОТ КЛИКОВ ПО ЛОГОТИПУ ВК */
+        .vk-shield {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 160px; /* Закрывает правый нижний угол, где кнопка ВК */
+            height: 50px;  /* Высота нижней панели управления */
+            background: rgba(0, 0, 0, 0); /* Абсолютно прозрачный */
+            z-index: 10; /* Ловит клики на себя, не пуская их в iframe */
+            cursor: default;
         }
 
         /* Информационная плашка "Сейчас в эфире" */
@@ -114,22 +126,23 @@
 
 <div class="container">
 
-    <!-- Твой живой эфир из OBS Studio друга через стабильный источник ВК по ссылке -->
+    <!-- Твой живой эфир из ВК, защищенный от кликов по логотипу -->
     <div class="video-wrapper">
         <iframe 
-            src="https://vkvideo.ru/video_ext.php?oid=-228287672&id=456239020&hash=005422245f2a6632&hd=3" 
+            src="https://vkvideo.ru" 
             allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
             allowfullscreen="true" 
             scrolling="no">
         </iframe>
+        <div class="vk-shield"></div> <!-- Наш защитный щит -->
     </div>
 
-    <!-- Инфо-бар (Обновляется автоматически кодом по МСК) -->
+    <!-- Инфо-бар -->
     <div class="status-bar">
-        <span class="status-online">● ЖИВОЙ ЭФИР ИЗ OBS:</span> <span id="current-show">Загрузка эфира...</span>
+        <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
 
-    <!-- Твоя старая сочная панель расписания -->
+    <!-- Полная сочная панель расписания -->
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
@@ -141,12 +154,6 @@
 
 <script>
     function updateTV() {
-        // ==========================================
-        // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ:
-        // Пиши "мультики" для обычного дня (работает по часам).
-        // Пиши "фильмы" для Дня Фильмов.
-        // Пиши "шоу" для спец-выпусков ваших передач.
-        // ==========================================
         const CURRENT_MODE = "мультики"; 
 
         // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
@@ -173,7 +180,7 @@
             if (timeInMinutes >= 540 && timeInMinutes < 630) {
                 statusBar.innerHTML = "«Просыпайся-ка» ☀️";
             } else if (timeInMinutes >= 630 && timeInMinutes < 750) {
-                statusBar.innerHTML = "«Мульт-тайм» ⚡";
+                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультиков) 🧸";
             } else {
                 statusBar.innerHTML = "Большой Киномарафон (Фильмы и Сериалы) 🎬🔥";
             }
@@ -183,14 +190,14 @@
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
                 <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
-                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕДАЧИ (Эксклюзивные шоу от админов!)</span></div>
+                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕРАЧИ (Эксклюзивные шоу от админов!)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
             `;
 
             if (timeInMinutes >= 540 && timeInMinutes < 630) {
                 statusBar.innerHTML = "«Просыпайся-ка» ☀️";
             } else if (timeInMinutes >= 720 && timeInMinutes < 900) {
-                statusBar.innerHTML = "«Мульт-тайм» 🧸";
+                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультиков) 🧸";
             } else if (timeInMinutes >= 1020 && timeInMinutes < 1200) {
                 statusBar.innerHTML = "🔥 ЭФИР АДМИНОВ: Наши Спец-Передачи! 🔥";
             } else {
@@ -209,7 +216,7 @@
             if (timeInMinutes >= 540 && timeInMinutes < 630) {
                 statusBar.innerHTML = "«Просыпайся-ка» ☀️";
             } else if (timeInMinutes >= 630 && timeInMinutes < 1080) {
-                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультсериалов из OBS) 🧸";
+                statusBar.innerHTML = "«Мульт-тайм» (Марафон мультсериалов) 🧸";
             } else if (timeInMinutes >= 1080 && timeInMinutes < 1200) {
                 statusBar.innerHTML = "«Музыкальная вечеринка» 🎵🕺";
             } else {
