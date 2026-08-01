@@ -47,18 +47,6 @@
             border-radius: 12px;
         }
 
-        /* 🛡️ КОРРЕКТНЫЙ НЕВИДИМЫЙ ЩИТ строго на логотип ВК */
-        .vk-shield {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 140px; /* Закрывает только сам значок ВК в углу */
-            height: 45px;  /* Высота плашки кнопок */
-            background: rgba(0, 0, 0, 0); 
-            z-index: 999; /* Поверх фрейма */
-            pointer-events: auto; /* Позволяет ловить клики */
-        }
-
         /* Информационная плашка "Сейчас в эфире" */
         .status-bar {
             background-color: #141414;
@@ -126,7 +114,7 @@
 
 <div class="container">
 
-    <!-- Твой живой эфир из ВК, защищенный от кликов -->
+    <!-- Чистый и стабильный живой эфир из ВК -->
     <div class="video-wrapper">
         <iframe 
             src="https://vkvideo.ru" 
@@ -134,7 +122,6 @@
             allowfullscreen="true" 
             scrolling="no">
         </iframe>
-        <div class="vk-shield"></div> 
     </div>
 
     <!-- Инфо-бар -->
@@ -142,7 +129,7 @@
         <span class="status-online">● СЕЙЧАС В ЭФИРЕ:</span> <span id="current-show">Загрузка эфира...</span>
     </div>
 
-    <!-- Твое расписание -->
+    <!-- Полная сочная панель расписания -->
     <div class="schedule">
         <h2 id="schedule-title">Расписание RNDM TV</h2>
         <div id="schedule-list">
@@ -154,7 +141,7 @@
 
 <script>
     // =================================================================
-    // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ (Строчка 153):
+    // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ:
     // Пиши "мультики" для обычного дня (работает по часам).
     // Пиши "фильмы" для Дня Фильмов.
     // Пиши "шоу" для спец-выпусков ваших передач.
@@ -195,7 +182,7 @@
             scheduleTitle.innerHTML = "Расписание RNDM TV (СПЕЦ-ВЫПУСК) 🚀";
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
-                <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной block)</span></div>
+                <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
                 <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕДАЧИ (Эксклюзивные шоу от админов!)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
             `;
@@ -233,15 +220,12 @@
 
     // 🕵️‍♂️ УМНАЯ ХАКЕРСКАЯ АВТО-СИНХРОНИЗАЦИЯ ПОЛЬЗОВАТЕЛЕЙ
     function checkAdminMode() {
-        // Загружаем чистый код текущей страницы с Гитхаба в фоновом режиме
         fetch(window.location.href, { cache: "no-store" })
         .then(response => response.text())
         .then(htmlText => {
-            // Ищем, какой режим сейчас прописан на Гитхабе в строчке CURRENT_MODE
             let match = htmlText.match(/const\s+CURRENT_MODE\s*=\s*["']([^"']+)["']/);
             if (match && match[1]) {
                 let liveModeOnGithub = match[1];
-                // Если режим на Гитхабе сменился, а у пользователя открыт старый — мягко перезапускаем страницу
                 if (liveModeOnGithub !== CURRENT_MODE) {
                     window.location.reload();
                 }
@@ -250,7 +234,7 @@
         .catch(err => console.log("Ошибка чека синхрона:", err));
     }
 
-        updateTV();
+    updateTV();
     setInterval(updateTV, 60000); // Обновляем плашки по часам каждую минуту
     setInterval(checkAdminMode, 30000); // Чекаем пульт на Гитхабе каждые 30 секунд под капотом!
 </script>
