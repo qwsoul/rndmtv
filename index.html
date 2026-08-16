@@ -8,7 +8,7 @@
     <style>
         /* Общие стили для вайба RNDM TV */
         body {
-            background-color: #0b0b0b !important; /* Глубокий черный цвет */
+            background-color: #0b0b0b !important;
             color: #ffffff;
             font-family: 'Futura', 'Helvetica Neue', Arial, sans-serif;
             margin: 0;
@@ -50,7 +50,7 @@
         /* Информационная плашка "Сейчас в эфире" */
         .status-bar {
             background-color: #141414;
-            border: 2px solid #ff6600; /* Твой сочный оранжевый цвет */
+            border: 2px solid #ff6600;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 30px;
@@ -114,7 +114,7 @@
 
 <div class="container">
 
-    <!-- Твоя идеальная рабочая ссылка на живой стрим из ВК -->
+    <!-- Твой живой стабильный эфир из ВК (Больше никогда не перезагрузится!) -->
     <div class="video-wrapper">
         <iframe 
             src="https://vkvideo.ru" 
@@ -140,16 +140,11 @@
 </div>
 
 <script>
-    function updateTV() {
-        // =================================================================
-        // 🎛️ ГЛАВНЫЙ АДМИНСКИЙ ПУЛЬТ УПРАВЛЕНИЯ КАНАЛОМ:
-        // Пиши "мультики" для обычного дня (работает по часам).
-        // Пиши "фильмы" для Дня Фильмов.
-        // Пиши "шоу" для спец-выпусков ваших передач.
-        // =================================================================
-        const CURRENT_MODE = "мультики"; 
+    // Переменная для хранения текущего режима внутри сайта
+    let SAVED_MODE = "мультики";
 
-        // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3)
+    function updateTV(currentMode) {
+        // СИНХРОНИЗАЦИЯ ПО МОСКВЕ (МСК / UTC+3) [ср. 2026]
         const now = new Date();
         const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
         const adminTime = new Date(utc + (3600000 * 3)); 
@@ -162,7 +157,7 @@
         const scheduleList = document.getElementById('schedule-list');
         const statusBar = document.getElementById('current-show');
 
-        if (CURRENT_MODE === "фильмы") {
+        if (currentMode === "фильмы") {
             scheduleTitle.innerHTML = "Расписание RNDM TV (День Фильмов) 🍿";
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
@@ -178,12 +173,12 @@
                 statusBar.innerHTML = "Большой Киномарафон (Фильмы и Сериалы) 🎬🔥";
             }
 
-        } else if (CURRENT_MODE === "шоу") {
+        } else if (currentMode === "шоу") {
             scheduleTitle.innerHTML = "Расписание RNDM TV (СПЕЦ-ВЫПУСК) 🚀";
             scheduleList.innerHTML = `
                 <div class="schedule-item"><span class="time">09:00 - 10:30</span><span class="title">«Просыпайся-ка» (Утренний бодряк)</span></div>
                 <div class="schedule-item"><span class="time">12:00 - 15:00</span><span class="title">«Мульт-тайм» (Дневной блок)</span></div>
-                <div class="schedule-item"><span class="time">🔥 НАШИ ПЕРЕРАЧИ (Эксклюзивные шоу от админов!)</span></div>
+                <div class="schedule-item"><span class="time">17:00 - 20:00</span><span class="title">🔥 НАШИ ПЕРЕРАЧИ (Эксклюзивные шоу от админов!)</span></div>
                 <div class="schedule-item"><span class="time">20:00 - 23:00</span><span class="title">Вечернее кино кино кино</span></div>
             `;
 
@@ -218,8 +213,29 @@
         }
     }
 
-    updateTV();
-    setInterval(updateTV, 60000); // Только часы, никакого авто-ребута!
+    // 🕵️‍♂️ УМНАЯ СИНХРОНИЗАЦИЯ БЕЗ ПЕРЕЗАГРУЗКИ ВИДЕО
+    function checkLiveAdminMode() {
+        // Читаем только наш легкий текстовый файл mode.txt [ср. 2026]
+        fetch('mode.txt', { cache: "no-store" })
+        .then(response => response.text())
+        .then(text => {
+            let cleanMode = text.trim().toLowerCase();
+            if (cleanMode === "мультики" || cleanMode === "фильмы" || cleanMode === "шоу") {
+                SAVED_MODE = cleanMode;
+            }
+            // Мягко обновляем расписание на экране [ср. 2026]
+            updateTV(SAVED_MODE);
+        })
+        .catch(err => {
+            // Если файла еще нет, просто крутим мульты по часам
+            updateTV(SAVED_MODE);
+        });
+    }
+
+    // Запускаем робота
+    checkLiveAdminMode();
+    // Каждые 10 секунд сайт бесшумно чекает пульт и обновляет только текст! [ср. 2026]
+    setInterval(checkLiveAdminMode, 10000); 
 </script>
 
 </body>
